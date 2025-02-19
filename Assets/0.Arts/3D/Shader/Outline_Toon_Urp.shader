@@ -1,4 +1,4 @@
-Shader "Lpk/LightModel/ToonLightBase"
+Shader "JOJO/Outline_Toon_URP"
 {
     Properties
     {
@@ -45,7 +45,7 @@ Shader "Lpk/LightModel/ToonLightBase"
             // #pragma shader_feature _ALPHAPREMULTIPLY_ON
             #pragma multi_compile _ _SHADOWS_SOFT
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-			#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             // -------------------------------------
             // Unity defined keywords
             #pragma multi_compile_fog
@@ -85,9 +85,9 @@ Shader "Lpk/LightModel/ToonLightBase"
                 float4 tangentWS     : TEXCOORD2;    // xyz: tangent, w: viewDir.y
                 float4 bitangentWS   : TEXCOORD3;    // xyz: bitangent, w: viewDir.z
                 float3 viewDirWS     : TEXCOORD4;
-				float4 shadowCoord	 : TEXCOORD5;	// shadow receive 
-				float4 fogCoord	     : TEXCOORD6;	
-				float3 positionWS	 : TEXCOORD7;	
+                float4 shadowCoord   : TEXCOORD5;    // shadow receive 
+                float4 fogCoord      : TEXCOORD6;    
+                float3 positionWS    : TEXCOORD7;    
                 float4 positionCS    : SV_POSITION;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -141,10 +141,10 @@ Shader "Lpk/LightModel/ToonLightBase"
                 float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, uv);
 
                 // return NH;
-               float specularNH = smoothstep((1-_SpecularStep * 0.05)  - _SpecularStepSmooth * 0.05, (1-_SpecularStep* 0.05)  + _SpecularStepSmooth * 0.05, NH) ;
-               float shadowNL = smoothstep(_ShadowStep - _ShadowStepSmooth, _ShadowStep + _ShadowStepSmooth, NL);
+                float specularNH = smoothstep((1-_SpecularStep * 0.05)  - _SpecularStepSmooth * 0.05, (1-_SpecularStep* 0.05)  + _SpecularStepSmooth * 0.05, NH) ;
+                float shadowNL = smoothstep(_ShadowStep - _ShadowStepSmooth, _ShadowStep + _ShadowStepSmooth, NL);
 
-				input.shadowCoord = TransformWorldToShadowCoord(input.positionWS);
+                input.shadowCoord = TransformWorldToShadowCoord(input.positionWS);
                 
                 //shadow
                 float shadow = MainLightRealtimeShadow(input.shadowCoord);
@@ -188,12 +188,14 @@ Shader "Lpk/LightModel/ToonLightBase"
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float4 tangent : TANGENT;
+                float4 color : COLOR; // 버텍스 컬러 추가
             };
 
             struct v2f
             {
                 float4 pos      : SV_POSITION;
-                float4 fogCoord	: TEXCOORD0;	
+                float4 fogCoord : TEXCOORD0;
+                float4 color    : COLOR; // 버텍스 컬러 전달
             };
             
             float _OutlineWidth;
@@ -203,16 +205,24 @@ Shader "Lpk/LightModel/ToonLightBase"
             {
                 v2f o;
                 VertexPositionInputs vertexInput = GetVertexPositionInputs(v.vertex.xyz);
-                o.pos = TransformObjectToHClip(float4(v.vertex.xyz + v.normal * _OutlineWidth * 0.1 ,1));
+
+                // 버텍스 컬러의 알파 값을 이용해 아웃라인 두께 조절 (검을수록 얇아짐)
+                float outlineScale = lerp(0.0, _OutlineWidth, v.color.a); // 0(검)~1(흰)에 따라 변화
+                o.pos = TransformObjectToHClip(float4(v.vertex.xyz + v.normal * outlineScale * 0.1 ,1));
+
                 o.fogCoord = ComputeFogFactor(vertexInput.positionCS.z);
+                o.color = v.color; // 버텍스 컬러 전달
 
                 return o;
             }
 
             float4 frag(v2f i) : SV_Target
             {
+                // 완전 검정(알파 0)일 경우 아웃라인 제거
+                if (i.color.a <= 0.01) discard;
+
                 float3 finalColor = MixFog(_OutlineColor, i.fogCoord);
-                return float4(finalColor,1.0);
+                return float4(finalColor, 1.0);
             }
             
             ENDHLSL
