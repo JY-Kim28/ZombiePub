@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Guide Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Guide
+  m_TableCollectionNameGuidString: 6aa9c32c6ff5a4e50a8ee408e6f04b44
+  m_Entries:
+  - m_Id: 47549767680
+    m_Key: GetMoney
+    m_Metadata:
+      m_Items: []
+  - m_Id: 212889231360
+    m_Key: OpenTheDoor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 272507068416
+    m_Key: Open the table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 538954424320
+    m_Key: Open the coffee machine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 750196350976
+    m_Key: Open the counter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 796820234240
+    m_Key: Serve coffee
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1082964041728
+    m_Key: Sell coffee
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1303643152384
+    m_Key: Clean a table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1357753868288
+    m_Key: take out the trash
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 6246737160341553480
+  references:
+    version: 2
+    RefIds:
+    - rid: 6246737160341553480
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1739782708450
