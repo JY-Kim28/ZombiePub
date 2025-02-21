@@ -8,14 +8,10 @@ public class Stage : MonoBehaviour
 {
     public int stageIdx;
 
-    [SerializeField] Transform outPointTR;
-    public Transform OutPointTR => outPointTR;
-
     public MissionManager mission;
 
-    //public ushort StageIdx;
-
     public int currStep = 1;
+
     List<LevelUpData> currStepLvUpData = new List<LevelUpData>();
     Queue<LevelUpData> lvUpDatas = new Queue<LevelUpData>();
 
@@ -27,10 +23,14 @@ public class Stage : MonoBehaviour
     public ObjectBase[] objectList;
     public ProductPile pile;
 
-
+#if UNITY_EDITOR
+    public bool employeeCheat = false;
+#endif
     public Employee[] employees;
     public int employeeLimit = 2;
     [SerializeField] public Transform employeePoint;
+
+    [SerializeField] public Transform customerContainerTR;
 
 
     public void LoadResources(Action progressCallback)
@@ -61,16 +61,17 @@ public class Stage : MonoBehaviour
 
             #region Player
 
-            string[] playerDatas = loadDatas[0].Split(",");
+            string[] playerDatas = loadDatas[0].Split("\n");
+            string[] playerEtcDatas = playerDatas[0].Split(",");
 
-            Game.Player.transform.position = new Vector3(float.Parse(playerDatas[0]), 0, float.Parse(playerDatas[1]));
+            Game.Player.transform.position = new Vector3(float.Parse(playerEtcDatas[0]), 0, float.Parse(playerEtcDatas[1]));
 
-            if(float.TryParse(playerDatas[2], out float t))
+            if(float.TryParse(playerEtcDatas[2], out float t))
             {
                 if(t != 0)
                 {
-                    ushort idx = ushort.Parse(playerDatas[3]);
-                    ushort count = ushort.Parse(playerDatas[4]);
+                    ushort idx = ushort.Parse(playerEtcDatas[3]);
+                    ushort count = ushort.Parse(playerEtcDatas[4]);
 
                     ProductScriptableObject pData = productPrefabs[idx + 1].Data;
 
@@ -80,6 +81,12 @@ public class Stage : MonoBehaviour
                         Game.Player.InputProduct(product);
                     }
                 }
+            }
+
+            string[] playerStatDatas = playerDatas[1].Split(",");
+            if(playerStatDatas.Length == 3)
+            {
+                (Game.Player.Stat as PlayerStat).SetStatLv(ushort.Parse(playerStatDatas[0]), ushort.Parse(playerStatDatas[1]), ushort.Parse(playerStatDatas[2]));
             }
 
             #endregion Player
@@ -132,6 +139,23 @@ public class Stage : MonoBehaviour
             }
             #endregion Employee
         }
+
+#if UNITY_EDITOR
+        if(employeeCheat)
+        {
+            for(int i = 0; i < employeeLimit; ++i)
+            {
+                if(employees[i] == null)
+                {
+                    CreateEmployee();
+                }
+
+                employees[i].transform.position = Game.Player.transform.position;
+
+            }
+        }
+#endif
+
 
         if (missionIdx == 0)
         {
@@ -308,10 +332,14 @@ public class Stage : MonoBehaviour
         sb.Append($"{Game.Player.transform.position.x},{Game.Player.transform.position.z},{productType},{productIdx},{count}");
         sb.AppendLine();
 
+        sb.Append($"{Game.Player.Stat.speedLv},{Game.Player.Stat.capacityLv},{Game.Player.Stat.amountLv}");
+        sb.AppendLine();
+
+
         #endregion Player
 
 
-        # region current step & mission
+        #region current step & mission
         sb.Append(line);
 
         sb.Append(currStep);

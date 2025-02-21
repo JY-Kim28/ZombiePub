@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -18,6 +16,7 @@ public class Employee : Worker
         {
             AI = new EmployeeAI(this);
             Stat = new WorkerStat();
+            Stat.SetBaseStat(startStat.speed, startStat.capacity, startStat.amount);
             Stat.speedLv.Subscribe(OnChangeSpeedLv);
         }
     }
@@ -33,6 +32,8 @@ public class Employee : Worker
         naviAgent ??= GetComponent<NavMeshAgent>();
         naviAgent.speed = Stat.speed;
         naviAgent.SetDestination(pos);
+
+        PlayAnimation("Move", true);
     }
 
 
@@ -88,7 +89,6 @@ public class WorkerStat
         Calculate();
     }
 
-
     public void SetLv(ushort lv)
     {
         this.lv = lv;
@@ -103,7 +103,7 @@ public class WorkerStat
         Calculate();
     }
 
-    public void Calculate()
+    public virtual void Calculate()
     {
         int value = lv - 1;
         if(value > 0)
@@ -126,7 +126,7 @@ public class WorkerStat
 
     public ushort GetMaxLv()
     {
-        return (ushort)(7 + (grade * 3));
+        return (ushort)(9 + (grade * 3));
     }
 
     public bool IsMaxLv()
@@ -142,15 +142,47 @@ public class PlayerStat : WorkerStat
     public void LvUpSpeed()
     {
         ++speedLv.Value;
+        Calculate();
     }
 
     public void LvUpCapacity()
     {
         ++capacityLv.Value;
+        Calculate();
     }
 
     public void LvUpAmount()
     {
         ++amountLv.Value;
+        Calculate();
     }
+
+    public void SetStatLv(ushort speedLv, ushort capacityLv, ushort amountLv)
+    {
+        this.speedLv.Value = speedLv;
+        this.capacityLv.Value = capacityLv;
+        this.amountLv.Value = amountLv;
+
+        Calculate();
+    }
+
+
+    public override void Calculate()
+    {
+        speed = startSpeed + (speedLv.Value * 0.2f);
+        capacity = (ushort)(startCapacity + capacityLv.Value);
+        amount = (ushort)(startAmount + amountLv.Value);
+    }
+
+
+#if UNITY_EDITOR
+
+    public void AddSpeedUp(float speed)
+    {
+        startSpeed += speed;
+
+        Calculate();
+    }
+#endif
+
 }

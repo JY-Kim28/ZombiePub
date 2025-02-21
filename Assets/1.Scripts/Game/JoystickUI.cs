@@ -46,11 +46,9 @@ public class JoystickUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
             joystickBar.anchoredPosition = fromCenter;
 
-
             Quaternion quaternion = Quaternion.FromToRotation(Vector3.up, fromCenter);
 
             Game.Player.Move(quaternion);
-
         }
     }
 

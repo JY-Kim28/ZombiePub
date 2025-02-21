@@ -63,7 +63,7 @@ public abstract class CellPlayerUpgrade : MonoBehaviour
         int size = points.Length;
         for (int i = 0; i < size; ++i)
         {
-            points[i].color = (lv - 2) > i ? activeColor : deactiveColor;
+            points[i].color = lv > i ? activeColor : deactiveColor;
         }
     }
 

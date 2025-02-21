@@ -41,6 +41,8 @@ public class ManageRoom : ObjectBase
 
             decorations[decoIdx].gameObject.SetActive(true);
         }
+
+        ShowDecoLv(currLv);
     }
 
 }

@@ -2,9 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using DopaminTable;
+using TMPro;
 
 public class ObjectBase : MonoBehaviour
 {
+    [SerializeField] TextMeshProUGUI decoLvText;
+
     public CollectMachine collectMachine;
 
     public GameObject[] decorations;
@@ -16,6 +19,7 @@ public class ObjectBase : MonoBehaviour
     protected List<BuffData> buffList = new List<BuffData>();
 
     public Worker worker;
+    public Worker readyWorker;
 
     public uint saveCollectCount;
 
@@ -83,6 +87,23 @@ public class ObjectBase : MonoBehaviour
             }
 
             SetBuff();
+        }
+
+        ShowDecoLv(currLv);
+    }
+
+    protected void ShowDecoLv(ushort lv)
+    {
+        if (decoLvText == null) return;
+
+        if (currLv != 0)
+        {
+            decoLvText.transform.parent.gameObject.SetActive(true);
+            decoLvText.text = $"Lv.{currLv}";
+        }
+        else
+        {
+            decoLvText.transform.parent.gameObject.SetActive(false);
         }
     }
 

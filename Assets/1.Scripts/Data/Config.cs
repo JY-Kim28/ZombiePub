@@ -75,4 +75,11 @@ public static class Config
 
         return re;
     }
+
+
+
+    public static uint GetEmployeeUpgradePrice(ushort lv)
+    {
+        return (uint)(40 + (10 * (lv / 3)));
+    }
 }

@@ -22,7 +22,7 @@ public class Resources : MonoBehaviour
 
     #region Pool
     Dictionary<ProductScriptableObject, ObjectPool<Product>> productPoolDic = new Dictionary<ProductScriptableObject, ObjectPool<Product>>();
-    ObjectPool<Customer> customerPool;
+    Dictionary<int, ObjectPool<Customer>> customerPoolDic = new Dictionary<int, ObjectPool<Customer>>();
     ObjectPool<Employee> employeePool;
     #endregion Pool
 
@@ -43,15 +43,22 @@ public class Resources : MonoBehaviour
 
     private IEnumerator LoadCustomer()
     {
-        var handler = Addressables.LoadAssetAsync<GameObject>("Customer");
-        while (handler.IsDone == false)
+        int max = Enum.GetValues(typeof(CUSTOMER_TYPE)).Length;
+
+        for (int i = 1; i < max; ++i)
         {
-            yield return null;
+            var handler = Addressables.LoadAssetAsync<GameObject>($"Customer{i}");
+            while (handler.IsDone == false)
+            {
+                yield return null;
+            }
+
+            //GameObject customer = Instantiate(handler.Result);
+            //customer.SetActive(false);
+
+            var pool = new ObjectPool<Customer>(() => Instantiate(handler.Result.GetComponent<Customer>()));
+            customerPoolDic.Add(i, pool);
         }
-
-        handler.Result.gameObject.SetActive(false);
-
-        customerPool = new ObjectPool<Customer>(() => Instantiate(handler.Result.GetComponent<Customer>()));
 
         LoadResources();
     }
@@ -138,16 +145,16 @@ public class Resources : MonoBehaviour
 
     #endregion Load Pool
 
-    public Customer GetCustomer()
+    public Customer GetCustomer(CUSTOMER_TYPE type)
     {
-        return customerPool.Get();
+        return customerPoolDic[(int)type].Get();
     }
 
     public void ReleaseCustomer(Customer customer)
     {
         customer.gameObject.SetActive(false);
         customer.transform.SetParent(transform);
-        customerPool.Release(customer);
+        customerPoolDic[(int)customer.type].Release(customer);
     }
 
 

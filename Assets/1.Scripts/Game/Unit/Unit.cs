@@ -15,7 +15,14 @@ public class Unit : MonoBehaviour
     protected virtual void Awake()
     {
         products = new Stack<Product>();
-        productsTR.gameObject.SetActive(false);
+
+        SetVisibleProductTr(false);
+    }
+
+    protected void SetVisibleProductTr(bool visible)
+    {
+        if(productsTR != null)
+            productsTR.gameObject.SetActive(visible);
     }
 
     public virtual bool InputProduct(Product product)
@@ -23,10 +30,11 @@ public class Unit : MonoBehaviour
         if (products.Count == 0 || (products.Peek().Data == product.Data))
         {
             product.transform.SetParent(productsTR);
+            product.transform.localRotation = Quaternion.identity;
             product.transform.localPosition = new Vector3(0, (products.Count * product.H), 0);
             products.Push(product);
 
-            productsTR.gameObject.SetActive(true);
+            SetVisibleProductTr(true);
 
             animator?.SetBool("Work", true);
 
@@ -61,11 +69,26 @@ public class Unit : MonoBehaviour
     {
         int count = products.Count;
 
-        productsTR.gameObject.SetActive(count != 0);
+        if(productsTR != null)
+            productsTR.gameObject.SetActive(count != 0);
     }
 
     public int GetProductsCount()
     {
         return products.Count;
+    }
+
+
+
+    public void PlayAnimation(string name, bool play)
+    {
+        if (animator != null)
+            animator.SetBool(name, play);
+    }
+
+    public void PlayAnimation(string name)
+    {
+        if (animator != null)
+            animator.SetTrigger(name);
     }
 }

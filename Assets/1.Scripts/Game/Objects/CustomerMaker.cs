@@ -1,10 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CustomerMaker : ObjectBase
 {
+    public CUSTOMER_TYPE customerType;
+    public SellingMachine[] targetSellings;
+    public Transform inTr;
+    public Transform outTr;
+
     float makeTime = 3;
     float time = 0;
 
@@ -28,12 +30,22 @@ public class CustomerMaker : ObjectBase
 
     private void CreateCustomer()
     {
-        Customer customer = Root.Resources.GetCustomer();
-        customer.transform.SetParent(transform.parent);
-        customer.transform.position = transform.position;
-        customer.gameObject.SetActive(true);
+        foreach(var sell in targetSellings)
+        {
+            if(sell.IsCustomerFull() == false)
+            {
+                Customer customer = Root.Resources.GetCustomer(customerType);
+                customer.transform.SetParent(Game.Stage.customerContainerTR);
+                customer.transform.position = inTr.position;
+                customer.gameObject.SetActive(true);
 
-        customer.Create();
+                customer.SetOutPoint(outTr);
+                customer.Create();
+
+                break;
+            }
+        }
+
     }
 
 

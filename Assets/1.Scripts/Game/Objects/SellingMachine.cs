@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class SellingMachine : ObjectBase
 {
+    public CUSTOMER_TYPE customerType;
+
+
     [SerializeField] UnitTriggerArea insertTriggerArea;
     [SerializeField] UnitTriggerArea casherTriggerArea;
     [SerializeField] Image casherEnterCircle;
@@ -91,6 +94,7 @@ public class SellingMachine : ObjectBase
     {
         insertedProducts.Push(product);
         product.transform.SetParent(insertedProductContainerTR);
+        product.transform.localRotation = Quaternion.identity;
         product.transform.localPosition = new Vector3(0, 0.18f + (insertedProducts.Count * product.H), 0);
         product.gameObject.SetActive(true);
     }
@@ -102,6 +106,7 @@ public class SellingMachine : ObjectBase
             if (unit as Worker)
             {
                 worker = unit as Worker;
+                readyWorker = null;
                 casherEnterCircle.color = Color.green;
             }
         }
@@ -134,6 +139,7 @@ public class SellingMachine : ObjectBase
             if (unit as Worker == worker)
             {
                 worker = null;
+                readyWorker = null;
                 casherEnterCircle.color = Color.red;
             }
         }
@@ -158,6 +164,7 @@ public class SellingMachine : ObjectBase
             Product money = Root.Resources.GetProduct(Game.Stage.productPrefabs[0].Data);
             money.SetValue(1);
             money.transform.SetParent(moneyContainerTR);
+            money.transform.localRotation = Quaternion.identity;
             money.transform.localPosition = Config.GetMoneyPos(moneys.Count);
             money.gameObject.SetActive(true);
             moneys.Push(money);
@@ -174,34 +181,62 @@ public class SellingMachine : ObjectBase
 
     public bool IsCustomerFull()
     {
-        return customers[^1] == null;
+        return customers[^1] != null;
     }
 
     public bool InsertCustomer(Customer customer)
     {
-        for(int i = 0; i < wayPoints.Count; ++i)
+        if (customerType == CUSTOMER_TYPE.ALL || customerType == customer.type)
         {
-            if(customers[i] == null)
-            {
-                customers[i] = customer;
-                customer.SetDestination(wayPoints[i]);
+            //for (int i = 0; i < wayPoints.Count; ++i)
+            //{
+            //    if (customers[i] == null)
+            //    {
+            //        customers[i] = customer;
+            //        customer.SetDestination(wayPoints[i]);
 
-                return true;
-            }
+            //        return true;
+            //    }
+            //}
+
+            //for (int i = wayPoints.Count - 1; i > -1; --i)
+            //{
+            //    if (customers[i] == null)
+            //    {
+            //        customers[i] = customer;
+            //        customer.SetDestination(i, wayPoints[i]);
+
+            //        return true;
+            //    }
+            //}
+
+            if (customers[^1] != null)
+                return false;
+
+            customers[^1] = customer;
+            customer.SetDestination(wayPoints.Count - 1, wayPoints[^1]);
+
+            return true;
         }
-
         return false;
     }
 
-    private void ArrangementCustomerLine()
+    public void ArrangementCustomerLine()
     {
         for(int i = 0; i < wayPoints.Count - 1; ++i)
         {
-            if(customers[i] == null && customers[i + 1] != null)
+            if (customers[i] == null && customers[i + 1] != null)
             {
-                customers[i] = customers[i + 1];
-                customers[i + 1] = null;
-                customers[i].SetDestination(wayPoints[i]);
+                if (Vector3.SqrMagnitude(customers[i + 1].targetPos - customers[i + 1].transform.position) != 0)
+                    return;
+
+                if(customers[i + 1].targetPos == wayPoints[customers[i + 1].targetPosIdx])
+                {
+                    customers[i] = customers[i + 1];
+                    customers[i + 1] = null;
+                    customers[i].SetDestination(i, wayPoints[i]);
+                }
+
             }
         }
     }
@@ -216,7 +251,7 @@ public class SellingMachine : ObjectBase
     {
         if(HaveCustomer() && insertedProducts.Count != 0)
         {
-            if (worker == null)
+            if (worker == null && readyWorker == null)
                 return true;
         }
 
@@ -263,23 +298,4 @@ public class SellingMachine : ObjectBase
             TakeMoney(m);
         }
     }
-
-
-
-    //public void ShowOrder(int count)
-    //{
-    //    orderUI.gameObject.SetActive(true);
-    //    orderUI.ShowOrderData($"Product{productData.Idx}", count);
-    //}
-
-    //public void ShowNoSeat()
-    //{
-    //    orderUI.gameObject.SetActive(true);
-    //    orderUI.ShowNoSeat();
-    //}
-
-    //public void HideOrder()
-    //{
-    //    orderUI.gameObject.SetActive(false);
-    //}
 }

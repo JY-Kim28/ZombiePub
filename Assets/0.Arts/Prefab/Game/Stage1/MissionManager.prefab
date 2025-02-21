@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 1
   startDelaySeconds: 0
-  arrrowPos: {x: -8.28, y: 1.56, z: 20.6}
+  arrrowPos: {x: -8.630003, y: 1, z: 20.88}
   missionTextCode: Open the counter
   targetObj: {fileID: 0}
 --- !u!1 &360160726250351391
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 1
   startDelaySeconds: 0
-  arrrowPos: {x: -1.26, y: 1.56, z: 17.4}
+  arrrowPos: {x: 0.3499984, y: 1, z: 20.6}
   missionTextCode: Open the table
   targetObj: {fileID: 0}
 --- !u!1 &2600166466375616184
@@ -249,8 +249,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3108992407323702950}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 21.42}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 28.480003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -259,7 +259,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -5.97, y: 2.64}
+  m_AnchoredPosition: {x: -1.7300043, y: 0}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &9092643431853845853
@@ -446,6 +446,7 @@ MonoBehaviour:
   - {fileID: 3466509698277725450}
   - {fileID: 3725066240079743051}
   - {fileID: 7189537064654579243}
+  currIdx: 0
 --- !u!1 &5251272905176713720
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,7 +473,7 @@ Transform:
   m_GameObject: {fileID: 5251272905176713720}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.1100041, y: 1, z: 26.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -492,7 +493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 1
   startDelaySeconds: 0
-  arrrowPos: {x: 0, y: 1.56, z: 24.4}
+  arrrowPos: {x: -0.1100041, y: 1, z: 26.44}
   missionTextCode: Open the coffee machine
   targetObj: {fileID: 0}
 --- !u!1 &5518743001373838924
@@ -521,7 +522,7 @@ Transform:
   m_GameObject: {fileID: 5518743001373838924}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -3.6600018, y: 0, z: 22.280003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -541,9 +542,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 0
   startDelaySeconds: 0
-  arrrowPos: {x: -3.28, y: 2.14, z: 20.2}
+  arrrowPos: {x: -3.660002, y: 2, z: 22.28}
   missionTextCode: Serve coffee
-  targetPos: {x: -3.28, y: 0, z: 20.2}
+  targetPos: {x: -3.660002, y: 0, z: 22.28}
   minDistance: 8
 --- !u!1 &7043724823673366051
 GameObject:
@@ -571,7 +572,7 @@ Transform:
   m_GameObject: {fileID: 7043724823673366051}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.7300043, y: 0, z: 28.480003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -591,9 +592,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 0
   startDelaySeconds: 14
-  arrrowPos: {x: -1.24, y: 2, z: 26.64}
+  arrrowPos: {x: -1.730004, y: 2, z: 28.48}
   missionTextCode: Serve coffee
-  targetPos: {x: -1.24, y: 0, z: 26.64}
+  targetPos: {x: -1.730004, y: 0, z: 28.48}
   minDistance: 2
 --- !u!1 &7580484911749538812
 GameObject:
@@ -621,7 +622,7 @@ Transform:
   m_GameObject: {fileID: 7580484911749538812}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.34999812, y: 0.92, z: 17.090002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -641,7 +642,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 0
   startDelaySeconds: 0
-  arrrowPos: {x: -1.28, y: 2.6, z: 14.2}
+  arrrowPos: {x: 0.3499981, y: 2.6, z: 17.09}
   missionTextCode: Clean a table
   usingMachine: {fileID: 0}
 --- !u!1 &7581520489854527171
@@ -670,7 +671,7 @@ Transform:
   m_GameObject: {fileID: 7581520489854527171}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -6.500003, y: 0, z: 22.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -690,9 +691,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 0
   startDelaySeconds: 0
-  arrrowPos: {x: -5.97, y: 2.64, z: 21.42}
+  arrrowPos: {x: -6.500003, y: 2.5, z: 22.25}
   missionTextCode: Sell coffee
-  targetPos: {x: -5.97, y: 0, z: 21.42}
+  targetPos: {x: -6.500003, y: 0, z: 22.25}
   minDistance: 2
 --- !u!1 &8070051055343733028
 GameObject:
@@ -719,8 +720,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8070051055343733028}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.000000015454313, y: -0.70710677, z: -0.000000015454313, w: 0.7071069}
+  m_LocalPosition: {x: 7.664002, y: 0.003, z: 11.019002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -740,9 +741,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: 0
   startDelaySeconds: 0
-  arrrowPos: {x: 7.7, y: 2.2, z: 10.96}
+  arrrowPos: {x: 7.664002, y: 2.2, z: 11.019}
   missionTextCode: take out the trash
-  targetPos: {x: 7.7, y: 0, z: 10.96}
+  targetPos: {x: 7.664002, y: 0, z: 11.019}
   minDistance: 4
 --- !u!1 &8768277748366672059
 GameObject:

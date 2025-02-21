@@ -30,33 +30,54 @@ public class CellEmployeeUpgrade : MonoBehaviour
         this.stat = stat;
         this.lvUpCallback = lvUpCallback;
 
-        if(idx == 0)
+
+        if (stat == null)
+        {
+            for (int i = 0; i < 3; ++i)
+            {
+                statCells[i].SetMaxLv(0);
+            }
+        }
+        else
+        {
+            int maxLv = stat.GetMaxLv();
+            for (int i = 0; i < 3; ++i)
+            {
+                statCells[i].SetMaxLv(maxLv);
+            }
+        }
+
+        Redraw();
+    }
+
+    public void Redraw()
+    {
+        DrawStats();
+        DrawBtns();
+    }
+
+    private void DrawStats()
+    {
+        if (idx == 0)
         {
             dim.SetActive(false);
         }
         else
         {
-            if(Game.Stage.employees[idx - 1] == null)
+            if (Game.Stage.employees[idx - 1] == null)
             {
                 dim.SetActive(true);
             }
-            else if(Game.Stage.employees[idx - 1].Stat.IsMaxLv())
+            else if (Game.Stage.employees[idx - 1].Stat.IsMaxLv())
             {
                 dim.SetActive(false);
             }
             else
             {
                 dim.SetActive(true);
-
-                DrawStats();
             }
         }
 
-        DrawBtns();
-    }
-
-    public void DrawStats()
-    {
         if (stat == null) return;
 
         statCells[0].SetLv(stat.speedLv.Value);
@@ -75,15 +96,14 @@ public class CellEmployeeUpgrade : MonoBehaviour
         {
             buyBtn.gameObject.SetActive(true);
         }
-        else if (stat.lv == stat.GetMaxLv())
+        else if (stat.lv >= stat.GetMaxLv())
         {
-            //max
             max.SetActive(true);
         }
         else
         {
             upgradeBtn.gameObject.SetActive(true);
-            upgradeText.text = 40 + (10 * (stat.lv / 3)).ToString();
+            upgradeText.text = Config.GetEmployeeUpgradePrice(stat.lv).ToString();
             adBtn.gameObject.SetActive(true);
         }
     }

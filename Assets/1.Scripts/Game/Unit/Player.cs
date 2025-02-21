@@ -9,7 +9,8 @@ public class Player : Worker
         base.Awake();
 
         Stat = new PlayerStat();
-        Stat.SetBaseStat(3f, 10, 10);
+        //Stat.SetBaseStat(3f, 10, 10);
+        Stat.SetBaseStat(startStat.speed, startStat.capacity, startStat.amount);
     }
 
     public void Move(Quaternion angle)

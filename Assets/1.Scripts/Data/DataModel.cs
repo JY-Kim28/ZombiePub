@@ -17,6 +17,13 @@ public enum OBJ_TYPE
     TrashBin,
 };
 
+public enum CUSTOMER_TYPE
+{
+    ALL,
+    TYPE1,
+    TYPE2
+}
+
 public enum PRODUCT_TYPE
 {
     None,

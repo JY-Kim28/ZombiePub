@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class ManufactureMachine : ObjectBase
 {
@@ -14,7 +15,9 @@ public class ManufactureMachine : ObjectBase
     public float makeTime = 3;
     public float time = 0;
     public int productLimit = 3;
-
+#if UNITY_EDITOR
+    public int makeCount = 1;
+#endif
     public ProductScriptableObject productData;
 
 
@@ -77,9 +80,24 @@ public class ManufactureMachine : ObjectBase
     }
 
 
-    private void AddObj()
+    public void AddObj()
     { 
         Product obj;
+
+#if UNITY_EDITOR
+        for(int i = 0; i < makeCount; ++i)
+        {
+            obj = Root.Resources.GetProduct(productData);
+            obj.transform.SetParent(releasedProductContainer);
+            obj.transform.localPosition = new Vector3(0, 0.18f + (products.Count * obj.H), 0);
+
+            products.Push(obj);
+
+            obj.gameObject.SetActive(true);
+
+            max.SetActive(products.Count == productLimit);
+        }
+#else
 
         obj = Root.Resources.GetProduct(productData);
         obj.transform.SetParent(releasedProductContainer);
@@ -88,8 +106,13 @@ public class ManufactureMachine : ObjectBase
         products.Push(obj);
 
         obj.gameObject.SetActive(true);
+#endif
 
         max.SetActive(products.Count == productLimit);
+
+        DOTween.Kill(deco.transform);
+        deco.transform.localScale = Vector3.one;
+        deco.transform.DOPunchScale(Vector3.one * 0.2f, 0.3f);
     }
 
     private void RemoveObj(Unit unit)

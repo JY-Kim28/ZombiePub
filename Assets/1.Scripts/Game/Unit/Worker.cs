@@ -6,6 +6,7 @@ using UnityEngine;
 public class Worker : Unit
 {
     [SerializeField] GameObject max;
+    [SerializeField] protected StartStatScriptableObject startStat;
 
     public WorkerStat Stat { get; protected set; }
 
@@ -23,6 +24,7 @@ public class Worker : Unit
         if (products.Count == 0 || (products.Peek().Data == product.Data))
         {
             product.transform.SetParent(productsTR);
+            product.transform.localRotation = Quaternion.identity;
             product.transform.localPosition = new Vector3(0, (products.Count * product.H), 0);
             product.gameObject.SetActive(true);
             products.Push(product);

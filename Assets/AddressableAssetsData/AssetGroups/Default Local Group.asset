@@ -27,11 +27,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2027fadf50f9646e2a13f05c39062581
-    m_Address: MoneyArea
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 88fddc51a69b54748b91e1c2a83511c0
     m_Address: Manufacture
     m_ReadOnly: 0
@@ -78,7 +73,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eae3ce07662f344c9a65dea3863e2b8e
-    m_Address: Customer
+    m_Address: Customer1
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -124,6 +119,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3bfec1c08bc8d4ab6b4f1917d8169edb
     m_Address: Atlas_UI
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a434d33c89cb438f88e16f9772d902a
+    m_Address: Customer2
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

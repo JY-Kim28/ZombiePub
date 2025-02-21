@@ -121,8 +121,11 @@ public class UsingMachine : ObjectBase
 
             if(customer.state == Customer.STATE.UsingProduct)
             {
-                customer.SetStateGoToOutPoint();
-                customers[i] = null;
+                if(customer.PlayEvent() == false)
+                {
+                    customer.SetStateGoToOutPoint();
+                    customers[i] = null;
+                }
             }
         }
 
@@ -175,7 +178,7 @@ public class UsingMachine : ObjectBase
             {
                 customers[i] = customer;
 
-                customer.SetUsingMachine(this, customerTRs[i].position);
+                (customer as CustomerCat).SetUsingMachine(this, customerTRs[i].position, customerTRs[i].rotation);
 
                 return true;
             }
@@ -184,12 +187,44 @@ public class UsingMachine : ObjectBase
         return false;
     }
 
+    public void RemoveCustomer(Customer customer)
+    {
+        int size = customers.Length;
+        for (int i = 0; i < size; ++i)
+        {
+            if (customers[i] != null)
+            {
+                if(customers[i] == customer)
+                {
+                    customers[i] = null;
+
+                    break;
+                }
+            }
+        }
+    }
+
     public override bool IsNeedWorker()
     {
-        if (trashCount != 0)
+        if (readyWorker != null)
+            return false;
+
+        if (trashCount != 0 && EmptyAllCustomer())
                 return true;
 
         return false;
+    }
+
+    private bool EmptyAllCustomer()
+    {
+        int emptyCount = 0;
+        int size = customers.Length;
+        for (int i = 0; i < size; ++i)
+        {
+            if (customers[i] == null) emptyCount++;
+        }
+
+        return emptyCount == size;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -201,11 +236,16 @@ public class UsingMachine : ObjectBase
             {
                 if (trashCount != 0)
                 {
-                    worker.InputTrash(trash.transform.position, trashCount);
+                    if(EmptyAllCustomer())
+                    {
+                        worker.InputTrash(trash.transform.position, trashCount);
 
-                    trash.SetActive(false);
+                        trash.SetActive(false);
 
-                    trashCount = 0;
+                        trashCount = 0;
+
+                        readyWorker = null;
+                    }
                 }
             }
         }

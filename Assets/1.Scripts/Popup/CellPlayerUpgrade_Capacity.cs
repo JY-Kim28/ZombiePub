@@ -5,6 +5,7 @@ public class CellPlayerUpgrade_Capacity : CellPlayerUpgrade
     protected override void SetStat()
     {
         Game.Player.Stat.capacityLv.Subscribe(OnDrawStatLv);
+        OnDrawStatLv(Game.Player.Stat.capacityLv.Value);
     }
 
     protected override uint GetLevelUpPrice()

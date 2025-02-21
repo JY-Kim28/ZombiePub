@@ -33,7 +33,7 @@ public class PopupEmployeeUpgrade : UIPopupBase
             return;
         }
 
-        uint price = (uint)((idx * 40) + ((stat.lv / 3) * 40));
+        uint price = Config.GetEmployeeUpgradePrice(stat.lv);
 
         if(ads || Root.UserInfo.MinusMoney(price))
         {
@@ -41,7 +41,7 @@ public class PopupEmployeeUpgrade : UIPopupBase
 
             foreach(var c in cells)
             {
-                c.DrawStats();
+                c.Redraw();
             }
         }
     }

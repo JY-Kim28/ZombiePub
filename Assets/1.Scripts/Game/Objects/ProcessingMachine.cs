@@ -34,16 +34,26 @@ public class ProcessingMachine : ObjectBase
         insertArea.callback = InsertProduct;
         processingArea.enterCallback = WorkerIn;
         processingArea.callback = ProcessingProduct;
+        processingArea.exitCallback = WorkerOut;
         releaseArea.callback = ReleaseProduct;
     }
 
-    public override void Initialize()
+    public override void SetData(ushort lv, ushort decoIdx)
     {
-        base.Initialize();
+        base.SetData(lv, decoIdx);
 
-        insertArea.gameObject.SetActive(false);
-        processingArea.gameObject.SetActive(false);
-        releaseArea.gameObject.SetActive(false);
+        if (lv != 0)
+        {
+            insertArea.gameObject.SetActive(true);
+            processingArea.gameObject.SetActive(true);
+            releaseArea.gameObject.SetActive(true);
+        }
+        else
+        {
+            insertArea.gameObject.SetActive(false);
+            processingArea.gameObject.SetActive(false);
+            releaseArea.gameObject.SetActive(false);
+        }
     }
 
     private void InsertProduct(Unit unit)
@@ -54,10 +64,9 @@ public class ProcessingMachine : ObjectBase
             if(product != null)
             {
                 if(product)
-                insertedProducts.Push(product);
-
                 product.transform.SetParent(insertedProductContainerTR);
-                product.transform.localPosition = Vector3.up * insertedProducts.Count;
+                product.transform.localPosition = new Vector3(0, 0.18f + (insertedProducts.Count * product.H), 0);
+                insertedProducts.Push(product);
             }
         }
     }
@@ -69,6 +78,7 @@ public class ProcessingMachine : ObjectBase
             if (unit as Worker)
             {
                 worker = unit as Worker;
+                readyWorker = null;
                 processingEnterCircle.color = Color.green;
             }
         }
@@ -93,20 +103,22 @@ public class ProcessingMachine : ObjectBase
 
                 Product release = Root.Resources.GetProduct(releaseProductData);
                 release.transform.SetParent(releasedProductContainerTR);
-                release.transform.localPosition = Vector3.up * releasedProducts.Count;
+                release.transform.localPosition = new Vector3(0, 0.18f + (releasedProducts.Count * release.H), 0);
+                release.gameObject.SetActive(true);
                 releasedProducts.Push(release);
             }
         }
     }
 
 
-    private void CasherOut(Unit unit)
+    private void WorkerOut(Unit unit)
     {
         if (worker != null)
         {
             if (unit as Worker == worker)
             {
                 worker = null;
+                readyWorker = null;
                 processingEnterCircle.color = Color.red;
             }
         }
@@ -123,4 +135,37 @@ public class ProcessingMachine : ObjectBase
         }
     }
 
+
+    public override bool IsNeedWorker()
+    {
+        if (insertedProducts.Count >= insertCountForRelease)
+        {
+            if (worker == null && readyWorker == null)
+                return true;
+        }
+
+        return false;
+    }
+
+
+
+    public Vector3 InsertPos()
+    {
+        return insertArea.transform.position;
+    }
+
+    public Vector3 ReleasePos()
+    {
+        return releaseArea.transform.position;
+    }
+
+    public Vector3 ProcessPos()
+    {
+        return processingArea.transform.position;
+    }
+
+    public bool HaveReleaseProduct()
+    {
+        return releasedProducts.Count != 0;
+    }
 }

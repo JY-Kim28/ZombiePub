@@ -4,10 +4,14 @@ using UnityEngine.AI;
 
 public class Customer : Unit
 {
-    [SerializeField] ScriptBubble scriptBubble;
+    [SerializeField] protected ScriptBubble scriptBubble;
 
-    public int TargetCount { get; private set; } = 1;
-    public int Count { get; private set; } = 1;
+    public CUSTOMER_TYPE type;
+
+    public int TargetCount { get; protected set; } = 1;
+    public int Count { get; protected set; } = 1;
+
+    Transform outTr;
 
     public enum STATE
     {
@@ -17,23 +21,26 @@ public class Customer : Unit
         FindUsingMachine,
         GoToUisngMachine,
         UsingProduct,
-        GoToOutPoint
+        GoToOutPoint,
+
+        Event
     }
 
     public STATE state = STATE.GoToChasherMachine;
 
-    NavMeshAgent naviAgent;
-
-    Coroutine stateCoroutine;
+    protected Coroutine stateCoroutine;
 
     public float originalUsingSpeed = 1;
     public float usingSpeed = 1;
     public ushort price;
 
-    SellingMachine sellingMachine;
-    UsingMachine usingMachine;
+    protected SellingMachine sellingMachine;
 
-    public void Create()
+    public int targetPosIdx { get; protected set; }
+    public Vector3 targetPos { get; protected set; }
+
+
+    public virtual void Create()
     {
         TargetCount = UnityEngine.Random.Range(1, 4);
         Count = TargetCount;
@@ -69,30 +76,37 @@ public class Customer : Unit
         }
     }
 
-    private IEnumerator ReadyToFirstCustomer()
+    protected virtual IEnumerator ReadyToFirstCustomer()
     {
         while (state == STATE.GoToChasherMachine)
         {
-            yield return new WaitForSeconds(1);
+            yield return null;
 
-            if(Vector3.SqrMagnitude(transform.position - sellingMachine.GetFirstCustomerPosition()) <= 1)
+            if (Vector3.SqrMagnitude(transform.position - targetPos) <= 0.002f)
             {
-                state = STATE.BuyingReady;
+                transform.position = targetPos;
 
-                scriptBubble.ShowOrder($"Product{sellingMachine.productData.Idx}", Count);
+                if(targetPos == sellingMachine.GetFirstCustomerPosition())
+                {
+                    state = STATE.BuyingReady;
+
+                    scriptBubble.ShowOrder($"Product{sellingMachine.productData.Idx}", Count);
+                }
+                else
+                {
+                    sellingMachine.ArrangementCustomerLine();
+                }
             }
         }
     }
 
-    public void SetDestination(Vector3 pos)
+    public virtual void SetDestination(int posIdx, Vector3 pos)
     {
-        naviAgent ??= gameObject.GetComponent<NavMeshAgent>();
-        naviAgent.SetDestination(pos);
-        animator?.SetBool("Move", true);
-
+        targetPosIdx = posIdx;
+        targetPos = pos;
     }
 
-    public void Take(Product product)
+    public virtual void Take(Product product)
     {
         Count--;
 
@@ -103,93 +117,19 @@ public class Customer : Unit
         if (Count == 0)
         {
             scriptBubble.Hide();
-
-            FindUseMachine();
         }
     }
 
-    //public override bool InputProduct(Product product)
-    //{
-    //    if (products.Count == 0 || (products.Peek().Data == product.Data))
-    //    {
-    //        productsTR.gameObject.SetActive(true);
-
-
-    //        product.transform.SetParent(productsTR);
-    //        product.transform.localPosition = new Vector3(0, (products.Count * product.H), 0);
-    //        products.Push(product);
-
-    //        return true;
-    //    }
-
-    //    return false;
-    //}
-
-    private void FindUseMachine()
+    public virtual bool PlayEvent()
     {
-        state = STATE.FindUsingMachine;
-
-        stateCoroutine = StartCoroutine(TryFindUseMachine());
-    }
-
-    private IEnumerator TryFindUseMachine()
-    {
-        while(state == STATE.FindUsingMachine)
-        {
-            yield return new WaitForSeconds(1);
-
-            scriptBubble.ShowNoSeat();
-
-            if (Game.Stage.SetCustomerToUsingMachine(this))
-            {
-                scriptBubble.Hide();
-
-                sellingMachine.CustomerOut(this);
-                sellingMachine = null;
-
-                break;
-            }
-        }
-    }
-
-    public void SetUsingMachine(UsingMachine machine, Vector3 targetPos)
-    {
-        state = STATE.GoToUisngMachine;
-
-        usingMachine = machine;
-
-        SetDestination(targetPos);
-
-        stateCoroutine = StartCoroutine(CheckingArriveUsingMachine());
-    }
-
-    private IEnumerator CheckingArriveUsingMachine()
-    {
-        while (state == STATE.GoToUisngMachine)
-        {
-            yield return null;
-
-            if(naviAgent.remainingDistance <= 0.1f && naviAgent.velocity.sqrMagnitude <= 0.1f)
-            {
-                state = STATE.UsingProduct;
-            }
-        }
-
-        Count = TargetCount;
-
-        usingMachine.AddProduct(products);
-
-        animator?.SetBool("Move", false);
-        animator?.SetBool("Work", false);
-        animator?.SetTrigger("Eat");
-
+        return false;
     }
 
     public void SetStateGoToOutPoint()
     {
         state = STATE.GoToOutPoint;
 
-        SetDestination(Game.Stage.OutPointTR.position);
+        SetDestination(0, outTr.position);
         
         stateCoroutine = StartCoroutine(CheckingArriveOutPoint());
     }
@@ -200,12 +140,17 @@ public class Customer : Unit
         {
             yield return null;
 
-            if (naviAgent.remainingDistance <= 0.1f && naviAgent.velocity.sqrMagnitude <= 0.1f)
+            if (Vector3.SqrMagnitude(transform.position - targetPos) <= 1)
             {
                 break;
             }
         }
 
         Root.Resources.ReleaseCustomer(this);
+    }
+
+    public void SetOutPoint(Transform tr)
+    {
+        outTr = tr;
     }
 }
